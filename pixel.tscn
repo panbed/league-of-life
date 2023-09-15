@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://pdh0mwg7nscr"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_ebcku"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_foqp7"]
+
+[node name="Pixel" type="Area2D"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+material = SubResource("CanvasItemMaterial_ebcku")
+shape = SubResource("RectangleShape2D_foqp7")
+debug_color = Color(0, 0.6, 0.701961, 0.419608)
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-10, -10, -10, 10, 10, 10, 10, -10)
