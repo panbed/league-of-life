@@ -2,11 +2,19 @@ package com.ianbed.leagueoflife;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
 public class Application extends javafx.application.Application {
+
+    public void buildEventListeners(Scene scene)
+    {
+        scene.addEventFilter(KeyEvent.ANY, keyEvent -> {
+            Controller.readKeypress(keyEvent);
+        });;
+    }
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("view.fxml"));
@@ -16,6 +24,7 @@ public class Application extends javafx.application.Application {
         stage.setScene(scene);
         stage.show();
         stage.setResizable(false);
+        buildEventListeners(scene);
     }
 
     public static void main(String[] args) {
