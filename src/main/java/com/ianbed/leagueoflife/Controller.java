@@ -1,5 +1,6 @@
 package com.ianbed.leagueoflife;
 
+import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -25,6 +26,7 @@ import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 
 import java.io.File;
+import java.security.Key;
 import java.util.Random;
 
 public class Controller {
@@ -107,25 +109,28 @@ public class Controller {
         imageBoard.setViewport(new Rectangle2D(500, 500, 100, 100));
         imageBoard.setSmooth(false);
         imageBoard.setImage(image); // change the image displayed in javafx to the newly created image
-
-
-
     }
 
-    public BufferedImage scale(BufferedImage before, double scale) {
-        int w, h; // width, height
-        int wS, hS; // width Scaled, height Scaled
-        w = before.getWidth();
-        h = before.getHeight();
-        wS = (int) (w * scale);
-        hS = (int) (h * scale);
-        BufferedImage scaledImage = new BufferedImage(wS, hS, BufferedImage.TYPE_INT_RGB);
-        AffineTransform scaleInstance = AffineTransform.getScaleInstance(scale, scale);
-        scaleInstance.scale(scale, scale);
-        AffineTransformOp scaleOp = new AffineTransformOp(AffineTransform.getScaleInstance(scale, scale), AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-        scaleOp.filter(before, scaledImage);
-        return scaledImage;
+//    public void
 
+    public void scale(double scale) {
+        int currentWidth = (int) imageBoard.getFitWidth();
+        int currentHeight = (int) imageBoard.getFitHeight();
+        int endWidth = (int) (imageBoard.getFitWidth() * scale);
+        int endHeight = (int) (imageBoard.getFitHeight() * scale);
+
+        Timeline timeline = new Timeline();
+        timeline.setCycleCount(Animation.INDEFINITE);
+
+        KeyFrame scaleImageView = new KeyFrame(
+                Duration.millis(500),
+                new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
+//                        imageBoard.setViewport(new Rectangle2D(1000, 1000, ));
+                    }
+                }
+        );
     }
 
     // DEPRECATED: use renderBoard
