@@ -1,6 +1,7 @@
 package com.ianbed.leagueoflife;
 
-public class Board {
+public class Board
+{
     int size;
     Tile[][] board;
 
@@ -31,14 +32,16 @@ public class Board {
         {
             for (int j = 0; j < size; j++)
             {
-                if (board[i][j].getActive())
-                {
-                    boardNew[i][j] = new Tile(i, j, Algorithms.WillLiveLiving(this, i, j));
-                }
-                else
-                {
-                    boardNew[i][j] = new Tile(i, j, Algorithms.WillComeBack(this, i, j));
-                }
+//                if (board[i][j].getActive())
+//                {
+//                    boardNew[i][j] = new Tile(i, j, Algorithms.WillLiveLiving(this, i, j));
+//                }
+//                else
+//                {
+//                    boardNew[i][j] = new Tile(i, j, Algorithms.WillComeBack(this, i, j));
+//                }
+
+                boardNew[i][j] = new Tile(i, j, Algorithms.Diamoeba(this, i, j));
             }
         }
 
@@ -51,9 +54,9 @@ public class Board {
         {
             for (int j = 0; j < size; j++)
                 if (board[i][j].getActive())
-                    System.out.print("[X]");
+                    System.out.print(": ");
                 else
-                    System.out.print("[ ]");
+                    System.out.print(". ");
 
             System.out.println();
         }
@@ -63,12 +66,24 @@ public class Board {
     {
         this.size = size;
         buildBoard();
+//        board[5][5].setActive(true);
+//        board[5][4].setActive(true);
+//        board[5][3].setActive(true);
+//
+//        board[4][5].setActive(true);
+//        board[3][4].setActive(true);
 
-//        while (true)
-//        {
-//            progressGeneration();
-//            printBoard();
-////            Thread.sleep(100);
-//        }
+        board[25][25].setActive(true);
+        board[25][24].setActive(true);
+        board[24][24].setActive(true);
+        board[24][25].setActive(true);
+
+
+        while (true)
+        {
+            progressGeneration();
+            printBoard();
+            Thread.sleep(1000);
+        }
     }
 }
