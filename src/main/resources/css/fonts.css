@@ -1,0 +1,7 @@
+@font-face {
+    src: url("../fonts/alagard.ttf");
+}
+
+.label {
+    -fx-font-family: 'alagard';
+}

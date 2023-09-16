@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.Group?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
 
-<GridPane fx:id="gridPane" alignment="CENTER_RIGHT" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ianbed.leagueoflife.Controller">
+<GridPane fx:id="gridPane" alignment="CENTER_RIGHT" maxHeight="800.0" maxWidth="1000.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ianbed.leagueoflife.Controller">
    <columnConstraints>
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
    </columnConstraints>
@@ -17,7 +24,29 @@
 <!--      <Canvas fx:id="grid" height="500.0" width="500.0" />-->
       <AnchorPane prefHeight="200.0" prefWidth="200.0">
          <children>
-            <ImageView fx:id="imageBoard" fitHeight="1000.0" fitWidth="1000.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="imageBoard" fitHeight="1000.0" fitWidth="1000.0" pickOnBounds="true" preserveRatio="true" smooth="false" />
+            <Group layoutX="-40.0" layoutY="720.0">
+               <children>
+                  <Circle fill="#6d1fff" layoutX="111.0" layoutY="113.0" radius="83.0" stroke="BLACK" strokeType="INSIDE" />
+                  <ImageView fitHeight="250.0" fitWidth="299.0" layoutX="-14.0" layoutY="-12.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../images/mana.png" />
+                     </image>
+                  </ImageView>
+                  <Label alignment="CENTER" contentDisplay="CENTER" layoutX="39.0" layoutY="42.0" prefHeight="141.0" prefWidth="144.0" stylesheets="@../../../css/fonts.css" text="50" textFill="WHITE">
+                     <font>
+                        <Font size="50.0" />
+                     </font>
+                     <effect>
+                        <DropShadow blurType="ONE_PASS_BOX" height="15.0" offsetY="5.0" radius="7.0" spread="0.07" width="15.0">
+                           <color>
+                              <Color opacity="0.3654821813106537" />
+                           </color>
+                        </DropShadow>
+                     </effect>
+                  </Label>
+               </children>
+            </Group>
 <!--            <HBox layoutY="432.0" prefHeight="67.0" prefWidth="500.0" spacing="32.0" style="-fx-background-color: #1f1f1f88;">-->
 <!--               <children>-->
 <!--                  <ImageView id="maze" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">-->
