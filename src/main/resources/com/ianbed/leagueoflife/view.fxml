@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 
 <GridPane fx:id="gridPane" alignment="CENTER_RIGHT" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ianbed.leagueoflife.Controller">
@@ -20,33 +17,33 @@
 <!--      <Canvas fx:id="grid" height="500.0" width="500.0" />-->
       <AnchorPane prefHeight="200.0" prefWidth="200.0">
          <children>
-            <ImageView fx:id="imageBoard" fitHeight="500.0" fitWidth="500.0" pickOnBounds="true" preserveRatio="true" />
-            <HBox layoutY="432.0" prefHeight="67.0" prefWidth="500.0" spacing="32.0" style="-fx-background-color: #1f1f1f88;">
-               <children>
-                  <ImageView id="maze" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../../images/maze.png" />
-                     </image>
-                  </ImageView>
-                  <ImageView id="vote" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../../images/vote.png" />
-                     </image>
-                  </ImageView>
-                  <ImageView id="highlife" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../../images/highlife.png" />
-                     </image>
-                  </ImageView>
-                  <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" />
-                  <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" />
-                  <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" />
-                  <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" />
-               </children>
-               <padding>
-                  <Insets left="32.0" right="32.0" top="16.0" />
-               </padding>
-            </HBox>
+            <ImageView fx:id="imageBoard" fitHeight="1000.0" fitWidth="1000.0" pickOnBounds="true" preserveRatio="true" />
+<!--            <HBox layoutY="432.0" prefHeight="67.0" prefWidth="500.0" spacing="32.0" style="-fx-background-color: #1f1f1f88;">-->
+<!--               <children>-->
+<!--                  <ImageView id="maze" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">-->
+<!--                     <image>-->
+<!--                        <Image url="@../../../images/maze.png" />-->
+<!--                     </image>-->
+<!--                  </ImageView>-->
+<!--                  <ImageView id="vote" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">-->
+<!--                     <image>-->
+<!--                        <Image url="@../../../images/vote.png" />-->
+<!--                     </image>-->
+<!--                  </ImageView>-->
+<!--                  <ImageView id="highlife" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">-->
+<!--                     <image>-->
+<!--                        <Image url="@../../../images/highlife.png" />-->
+<!--                     </image>-->
+<!--                  </ImageView>-->
+<!--                  <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" />-->
+<!--                  <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" />-->
+<!--                  <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" />-->
+<!--                  <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" />-->
+<!--               </children>-->
+<!--               <padding>-->
+<!--                  <Insets left="32.0" right="32.0" top="16.0" />-->
+<!--               </padding>-->
+<!--            </HBox>-->
          </children>
       </AnchorPane>
    </children>
