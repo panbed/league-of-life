@@ -19,12 +19,11 @@ import javafx.util.Duration;
 
 import java.awt.image.BufferedImage;
 
-import java.io.File;
-import java.util.Random;
-
 public class Controller {
     final static int size = 1000;
     final static int frameInterval = 10;
+    static int x_size = 5000;
+    static int y_size = 5000;
     static int interval = 0;
     public ImageView imageBoard;
     @FXML
@@ -32,25 +31,20 @@ public class Controller {
     @FXML
     private Canvas grid;
 
-//    @FXML
-//    protected void onHelloButtonClick() {
-//        welcomeText.setText("Welcome to JavaFX Application!");
-//    }
-
     public Image renderBoard(Board board) {
         // create our image to render onto
-        BufferedImage bufferedImage = new BufferedImage(5000, 5000, BufferedImage.TYPE_INT_RGB);
+        BufferedImage bufferedImage = new BufferedImage(x_size, y_size, BufferedImage.TYPE_INT_RGB);
         int r = 255, g = 0, b = 0; // color: red
         int col = colorize(r, g, b); // bitshift to create int for color
         // iterate through all pixels, if it should be active, then set the color on the image to active as well
         for (int x = 0; x < size; x++) {
             for (int y = 0; y < size; y++) {
                 if (board.retrieve(x, y).isActive()) {
+
                     // Scale so one tile is spread over a 5x5 area
                     for (int i = 0; i < 5; i++)
                         for (int j = 0; j < 5; j++)
-                            bufferedImage.setRGB((x*5+i)%5000, (y*5+j)%5000, col);
-
+                            bufferedImage.setRGB((x*5+i) % x_size, (y*5+j) % y_size, col);
                 }
             }
         }
@@ -66,28 +60,9 @@ public class Controller {
     public void updateBoard(Board board, boolean updater) {
         double x, y;
 
-        if (imageBoard.getViewport() != null)
-        {
-            x = imageBoard.getViewport().getHeight();
-            y = imageBoard.getViewport().getHeight();
-        }
-        else
-        {
-            x = imageBoard.getFitWidth();
-            y = imageBoard.getFitHeight();
-        }
-
-        if (x < 200 || y < 200)
-        {
-            x = 200;
-            y = 200;
-        }
-        // this is where the magic (zoomeing) se ocurio
-        Rectangle2D nuevo = new Rectangle2D(0, 0,  x -1,  y-1 );
-        imageBoard.setSmooth(true);
-        imageBoard.setViewport(nuevo);
         Thread thread = new Thread("Generational Renderer") {
             public void run() {
+                // 100 - interval spacing between zoom and update.
                 if (updater && interval % 100 == 0)
                 {
                     board.progressGeneration(0);
@@ -98,6 +73,26 @@ public class Controller {
         };
         thread.start();
 
+        if (imageBoard.getViewport() != null)
+        {
+            x = imageBoard.getViewport().getHeight();
+            y = imageBoard.getViewport().getHeight();
+        }
+        else
+        {
+            x = x_size;
+            y = y_size;
+        }
+
+        if (x < 200 || y < 200)
+        {
+            x = 200;
+            y = 200;
+        }
+        // this is where the magic (zoomeing) se ocurio
+        Rectangle2D nuevo = new Rectangle2D(0, 0,  x-1,  y-1);
+        imageBoard.setSmooth(true);
+        imageBoard.setViewport(nuevo);
 
         interval++;
     }
