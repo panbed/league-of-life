@@ -30,7 +30,14 @@ public class Board
 
         for (int i = 0; i < size; i++)
             for (int j = 0; j < size; j++)
-                boardNew[i][j] = new Tile(i, j, new Automaton(this, i, j).Life());
+            {
+                Tile nuevo = new Tile(i, j, new Automaton(this, i, j).Maze());
+
+                if (nuevo.isActive())
+                    nuevo.setAge(board[i][j].getAge() + 1);
+
+                boardNew[i][j] = nuevo;
+            }
 
         board = boardNew;
     }
@@ -40,7 +47,7 @@ public class Board
         for (int i = 0; i < size; i++)
         {
             for (int j = 0; j < size; j++)
-                if (board[i][j].getActive())
+                if (board[i][j].isActive())
                     System.out.print(": ");
                 else
                     System.out.print(". ");
