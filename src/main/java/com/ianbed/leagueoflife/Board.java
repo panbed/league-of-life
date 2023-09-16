@@ -29,21 +29,8 @@ public class Board
         Tile[][] boardNew = new Tile[size][size];
 
         for (int i = 0; i < size; i++)
-        {
             for (int j = 0; j < size; j++)
-            {
-//                if (board[i][j].getActive())
-//                {
-//                    boardNew[i][j] = new Tile(i, j, Algorithms.WillLiveLiving(this, i, j));
-//                }
-//                else
-//                {
-//                    boardNew[i][j] = new Tile(i, j, Algorithms.WillComeBack(this, i, j));
-//                }
-
-                boardNew[i][j] = new Tile(i, j, Algorithms.Diamoeba(this, i, j));
-            }
-        }
+                boardNew[i][j] = new Tile(i, j, new Automaton(this, i, j).Life());
 
         board = boardNew;
     }
@@ -62,7 +49,7 @@ public class Board
         }
     }
 
-    public Board(int size) throws Exception
+    public Board(int size)
     {
         this.size = size;
         buildBoard();
@@ -79,11 +66,11 @@ public class Board
         board[24][25].setActive(true);
 
 
-        while (true)
-        {
-            progressGeneration();
-            printBoard();
-            Thread.sleep(1000);
-        }
+//        while (true)
+//        {
+//            progressGeneration();
+////            printBoard();
+//            Thread.sleep(1000);
+//        }
     }
 }
