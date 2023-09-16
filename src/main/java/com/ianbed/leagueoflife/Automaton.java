@@ -49,6 +49,18 @@ public class Automaton
                 livingNeighbors++;
     }
 
+    public boolean callAutomaton(int automata)
+    {
+        return switch (automata) {
+            case 1 -> Serviettes();
+            case 2 -> Diamoeba();
+            case 3 -> HighLife();
+            case 4 -> Vote();
+            case 5 -> Maze();
+            default -> Life();
+        };
+    }
+
     public boolean Life()
     {
         if (input.retrieve(x, y).isActive())

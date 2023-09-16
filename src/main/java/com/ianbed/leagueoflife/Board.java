@@ -1,5 +1,8 @@
 package com.ianbed.leagueoflife;
 
+import java.util.Random;
+import java.util.function.Function;
+
 public class Board
 {
     int size;
@@ -24,14 +27,15 @@ public class Board
                 board[i][j] = new Tile(i, j);
     }
 
-    public void progressGeneration()
+    public void progressGeneration(int automata)
     {
         Tile[][] boardNew = new Tile[size][size];
 
         for (int i = 0; i < size; i++)
             for (int j = 0; j < size; j++)
             {
-                Tile nuevo = new Tile(i, j, new Automaton(this, i, j).Maze());
+
+                Tile nuevo = new Tile(i, j, new Automaton(this, i, j).callAutomaton(automata));
 
                 if (nuevo.isActive())
                     nuevo.setAge(board[i][j].getAge() + 1);
@@ -40,6 +44,24 @@ public class Board
             }
 
         board = boardNew;
+    }
+
+    public void randomPixelPlacement(int count)
+    {
+        Random random = new Random();
+        int x, y;
+
+        for (int i = 0; i < count; i++) {
+            x = 1 + random.nextInt(size - 2);
+            y = 1 + random.nextInt(size - 2);
+
+            // Active all pixels directly adjacent to (x,y)
+            board[x][y].setActive(true);
+            board[x+1][y+1].setActive(true);
+            board[x-1][y+1].setActive(true);
+            board[x+1][y-1].setActive(true);
+            board[x-1][y-1].setActive(true);
+        }
     }
 
     public void printBoard()
