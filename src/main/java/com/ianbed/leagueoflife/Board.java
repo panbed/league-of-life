@@ -60,24 +60,5 @@ public class Board
     {
         this.size = size;
         buildBoard();
-//        board[5][5].setActive(true);
-//        board[5][4].setActive(true);
-//        board[5][3].setActive(true);
-//
-//        board[4][5].setActive(true);
-//        board[3][4].setActive(true);
-
-        board[25][25].setActive(true);
-        board[25][24].setActive(true);
-        board[24][24].setActive(true);
-        board[24][25].setActive(true);
-
-
-//        while (true)
-//        {
-//            progressGeneration();
-////            printBoard();
-//            Thread.sleep(1000);
-//        }
     }
 }
