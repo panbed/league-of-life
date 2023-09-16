@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.layout.*?>
+
+<Pane xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ianbed.leagueoflife.Controller">
+   <children>
+      <Canvas fx:id="grid" height="1000.0" width="1000.0" />
+   </children>
+</Pane>
