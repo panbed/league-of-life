@@ -1,7 +1,7 @@
-public class Tile {
+public class Tile
+{
     boolean active;
-    int x_pos;
-    int y_pos;
+    int x_pos, y_pos;
 
     public boolean getActive()
     {
