@@ -1,6 +1,7 @@
 package com.ianbed.leagueoflife;
 
 import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
@@ -8,27 +9,37 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
 import javafx.scene.control.Label;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.nio.Buffer;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Random;
 
 public class Controller {
     final static int size = 1000;
     final static int window_width = 1000, window_height = 1000;
     final static int frameInterval = 5, generationalInterval = 100;
-    public MediaView backgroundVideo;
+    public Rectangle coolSquareClip;
+    public Label informationLabel;
+    public Label currentAlgorithm;
+    public HBox algorithmBox;
+    public Label pauseText;
 
     int automata = 0, spawnQuantity = 15000;
-    static boolean moveGenerations = true, mouseEvent = false;
+    boolean gameStarted = false;
+    static boolean moveGenerations = false, mouseEvent = false;
 
     static int x_size = 5000, y_size = 5000;
     static int max_size = 200;
@@ -40,7 +51,6 @@ public class Controller {
     static double m_x;
     static double m_y;
     int x_vel = 0, y_vel = 0;
-  
     int topLeftMinimapX, topLeftMinimapY, miniMapFocusWidth, miniMapFocusHeight;
 
     @FXML
@@ -53,10 +63,19 @@ public class Controller {
 
     public ImageView hotbar1; // mazda
     public ImageView hotbar2; // diamoeba
-    public ImageView hotbar3; //
+    public ImageView hotbar3; // highlife
     public ImageView hotbar4; // vote
-    public ImageView hotbar5; //
-    public ImageView hotbar6; //
+    public ImageView hotbar5; // serviettes
+    public ImageView hotbar6; // life
+
+    public MediaView backgroundVideo;
+    public Label mainMenuBody;
+    public Rectangle playButtonRect;
+    public Label playButtonLabel;
+    public Pane menuPane;
+    public AnchorPane gamePane;
+    public Circle manaCircleRadius;
+
     Board pixels;
   
   
@@ -86,8 +105,7 @@ public class Controller {
     public Image convertBufferedImage(BufferedImage bufferedImage) {
         return SwingFXUtils.toFXImage(bufferedImage, null);
     }
-  
-  
+
     public void renderMinimap(BufferedImage bufferedImage) {
         int red = 254, green = 254, blue = 254;
         int col = colorize(red, green, blue);
@@ -114,8 +132,6 @@ public class Controller {
         topLeftMinimapY = (int) rectangle2D.getMinY();
         miniMapFocusWidth = (int) rectangle2D.getWidth();
         miniMapFocusHeight = (int) rectangle2D.getHeight();
-
-//        System.out.println(bottomRight);
     }
 
     public int colorize(int r, int g, int b)
@@ -153,12 +169,16 @@ public class Controller {
         thread.start();
     }
 
-    public void updateBoard(Board board, boolean updater) {
+    public void updateBoard(Player player, Board board, boolean updater) {
         double x, y;
         double top, left;
         Rectangle2D nuevo;
 
         threadedGenerator(board, updater);
+        manaLabel.setText(String.format("%d", player.getMana()));
+        manaCircleRadius.setRadius(player.getMana() >= 17 ? player.getMana() - 17 : 17 - (83 % player.getMana()));
+        setAlgorithmLabel(automata);
+        togglePause(moveGenerations);
 
         if (imageBoard.getViewport() != null)
         {
@@ -228,7 +248,7 @@ public class Controller {
         {
             int click_x = (int) ((new_x + (x * (m_x/window_width))) / 5);
             int click_y = (int) ((new_y + (y * ((m_y + 110)/window_height))) / 5);
-            tileAtPoint(click_x, click_y);
+            tileAtPoint(player, click_x, click_y);
         }
 
         updateVel();
@@ -285,17 +305,30 @@ public class Controller {
         }
         else if (press.getText().equals("x"))
         {
-            if (press.getEventType().getName().equals("KEY_PRESSED"))
+            if (press.getEventType().getName().equals("KEY_PRESSED")) {
                 moveGenerations = !moveGenerations;
+
+            }
+
         }
     }
 
-    public void tileAtPoint(int x, int y)
+    public void togglePause(boolean movementEnabled) {
+        if (!movementEnabled) {
+            pauseText.setVisible(true);
+        }
+        else {
+            pauseText.setVisible(false);
+        }
+    }
+
+    public void tileAtPoint(Player player, int x, int y)
     {
-        pixels.retrieve(x, y).setActive(true);
-        imageBoard.setImage(convertBufferedImage(renderBoard(pixels)));
-//        System.out.println(y);
-        mouseEvent = false;
+        if (player.attemptCast(1)) {
+            pixels.retrieve(x, y).setActive(true);
+            imageBoard.setImage(convertBufferedImage(renderBoard(pixels)));
+            mouseEvent = false;
+        }
     }
 
     public static void readMousePress(MouseEvent input)
@@ -308,24 +341,244 @@ public class Controller {
         }
     }
 
+    public void setOpacity(Player player, ArrayList<ImageView> imageViews) {
+        for (ImageView i : imageViews) {
+            if (((int) i.getUserData()) > player.getMana()) {
+                i.setOpacity(0.25);
+            }
+            else {
+                i.setOpacity(1);
+            }
+        }
+    }
+
+    public void invertPlayButton(int opt) {
+        if (opt == 1) {
+            playButtonRect.setFill(Color.BLACK);
+//            playButtonLabel.setStyle("-fx-text-fill: white");
+        }
+        else {
+            playButtonRect.setFill(Color.WHITE);
+//            playButtonLabel.setStyle("-fx-text-fill: black; -fx-font-size: 69px");
+        }
+    }
+
+    public void hideMenuShowGame() {
+        menuPane.setVisible(false);
+        menuPane.setDisable(true);
+        gamePane.setVisible(true);
+        gamePane.setDisable(false);
+        moveGenerations = true;
+    }
+
+    public void castSpellOverTime(Player player, int mana, int currentAutomata) {
+        Timeline spellCaster = new Timeline();
+        KeyFrame castUpdate = new KeyFrame(Duration.millis(500), event -> {
+            if (!player.attemptCast(mana)) {
+                automata = currentAutomata; // ran out of mana
+            }
+        });
+        spellCaster.getKeyFrames().add(castUpdate);
+        spellCaster.setCycleCount(5);
+        spellCaster.play();
+    }
+
+    public void setHeroActions(Player player) {
+        gridPane.setOnMouseClicked(event -> {
+        });
+
+        ImageView[] views = new ImageView[6];
+        views[0] = hotbar1;
+        views[1] = hotbar2;
+        views[2] = hotbar3;
+        views[3] = hotbar4;
+        views[4] = hotbar5;
+        views[5] = hotbar6;
+
+
+        algorithmBox.setOnMouseExited(event -> {
+            Timeline timeline = new Timeline(new KeyFrame(Duration.ZERO));
+            KeyFrame keyFrame = new KeyFrame(
+                    Duration.millis(500),
+                    new KeyValue(informationLabel.opacityProperty(), 0));
+            timeline.getKeyFrames().add(keyFrame);
+            timeline.setOnFinished(actionEvent -> {
+                informationLabel.setText("");
+                informationLabel.setOpacity(1);
+            });
+            timeline.play();
+        });
+
+
+        // EW EWE WEW EW EWEWWWWWWWWWWWWWWWWWW I DONT LIKE THIS BUT ITS GONNA HAVE TO GO IN FOR NOW
+        hotbar1.setOnMouseEntered(event -> {
+            informationLabel.setOpacity(1);
+            informationLabel.setText("Maze. Pixels will create maze-like structures. Difficult to kill off, but uses a large amount of mana over a 2 second period.");
+        });
+
+        hotbar2.setOnMouseEntered(event -> {
+            informationLabel.setOpacity(1);
+            informationLabel.setText("Diamoeba. Pixels will consolidate and clump together. Cheap.");
+        });
+
+        hotbar3.setOnMouseEntered(event -> {
+            informationLabel.setOpacity(1);
+            informationLabel.setText("Highlife.\n\"It seems to me that 'B36/S23' is really the game I should have found, since it's so rich in nice things.\"");
+        });
+
+        hotbar4.setOnMouseEntered(event -> {
+            informationLabel.setOpacity(1);
+            informationLabel.setText("Vote. Consolidates into clumps and stay relatively stable.");
+        });
+
+        hotbar5.setOnMouseEntered(event -> {
+            informationLabel.setOpacity(1);
+            informationLabel.setText("Serviettes. An explosion, but only briefly, before you run out of mana.");
+        });
+
+        hotbar6.setOnMouseEntered(event -> {
+            informationLabel.setOpacity(1);
+            informationLabel.setText("Life. The classic Game of Life by John Conway.");
+        });
+        informationLabel.setText("");
+        for (int i = 0; i < 6; i++) {
+//            views[i].setOnMouseExited(event -> {
+//                Timeline timeline = new Timeline();
+//                KeyFrame keyFrame = new KeyFrame(
+//                        Duration.millis(250),
+//                        new KeyValue(informationLabel.opacityProperty(), 0));
+//                timeline.getKeyFrames().add(keyFrame);
+//                timeline.setOnFinished(actionEvent -> {
+//                    informationLabel.setText("");
+//                    informationLabel.setOpacity(1);
+//                });
+//                timeline.play();
+//            });
+
+        }
+
+        hotbar1.setOnMouseClicked(event -> {
+            if (player.attemptCast(9)) {
+                automata = 5; // maze
+            }
+        });
+        hotbar2.setOnMouseClicked(event -> {
+            automata = 2; // diamoeba
+            if (player.attemptCast(9)) {
+                automata = 2; // diamoeba
+            }
+        });
+        hotbar3.setOnMouseClicked(event -> {
+            if (player.attemptCast(9)) {
+                automata = 3; // highlife
+            }
+        });
+        hotbar4.setOnMouseClicked(event -> {
+            if (player.attemptCast(9)) {
+                automata = 4; // vote
+            }
+        });
+        hotbar5.setOnMouseClicked(event -> {
+//            if (player.attemptCast(9)) {
+//                automata = 1; // serviettes
+//            }
+            if (automata != 1) {
+                castSpellOverTime(player, 9, automata);
+            }
+        });
+        hotbar6.setOnMouseClicked(event -> {
+            if (player.attemptCast(9)) {
+                automata = 0; // life
+            }
+        });
+    }
+
+    public void setAlgorithmLabel(int choice) {
+        switch (choice) {
+            case 1 -> currentAlgorithm.setText("maze");
+            case 2 -> currentAlgorithm.setText("diamoeba");
+            case 3 -> currentAlgorithm.setText("highlife");
+            case 4 -> currentAlgorithm.setText("vote");
+            case 5 -> currentAlgorithm.setText("serviettes");
+            default -> currentAlgorithm.setText("life");
+        }
+    }
+
     @FXML
     public void initialize() {
+        playButtonRect.setOnMouseEntered(event -> invertPlayButton(1));
+        playButtonRect.setOnMouseExited(event -> invertPlayButton(2));
+        playButtonLabel.setOnMouseEntered(event -> invertPlayButton(1));
+        playButtonLabel.setOnMouseExited(event -> invertPlayButton(2));
 
-//        Media media = new Media("../../video/gameplay.mkv");
-//        backgroundVideo.
+        playButtonRect.setOnMouseClicked(event -> hideMenuShowGame());
+        playButtonLabel.setOnMouseClicked(event -> hideMenuShowGame());
 
+        Media media = new Media(new File("src/main/resources/video/gameplay.mp4").toURI().toString());
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        mediaPlayer.setAutoPlay(true);
+        backgroundVideo.setMediaPlayer(mediaPlayer);
 
+        mainMenuBody.setText("Q/E zoom\nW/A/S/D pan\nX stop\n-> frame advance");
+
+        Player chilleingandRelaxeing = new Player();
 
         pixels = new Board(size);
         pixels.randomPixelPlacement(spawnQuantity);
         boolean active = false;
 
+        ArrayList<ImageView> imageViews = new ArrayList<>();
+        // cool,  get all the cool hotbar items so that i dont have to repeat
+        // ( i think )
+        imageViews.add(hotbar1);
+        imageViews.add(hotbar2);
+        imageViews.add(hotbar3);
+        imageViews.add(hotbar4);
+        imageViews.add(hotbar5);
+        imageViews.add(hotbar6);
+
+        Timeline hotbarUpdater = new Timeline();
+        KeyFrame updateHotbar = new KeyFrame(Duration.millis(100), event -> {
+            setOpacity(chilleingandRelaxeing, imageViews);
+        });
+        hotbarUpdater.getKeyFrames().add(updateHotbar);
+        hotbarUpdater.setCycleCount(Timeline.INDEFINITE);
+        hotbarUpdater.play();
+
         // use timeline to update board without stopping the main gui thread
         Timeline boardUpdater = new Timeline();
-        KeyFrame cool = new KeyFrame(Duration.millis(frameInterval), event -> updateBoard(pixels, moveGenerations));
+        KeyFrame cool = new KeyFrame(Duration.millis(frameInterval), event -> {
+            updateBoard(chilleingandRelaxeing, pixels, moveGenerations);
+        });
         boardUpdater.getKeyFrames().add(cool);
 
+        // TODO: during titlescreen the games running, fix later lol :3
         boardUpdater.setCycleCount(Timeline.INDEFINITE);
         boardUpdater.play();
+
+        Timeline manaIncrementor = new Timeline();
+        KeyFrame incrementMana = new KeyFrame(Duration.millis(2000), event -> {
+            if (moveGenerations) chilleingandRelaxeing.addMana(1);
+        });
+        manaIncrementor.getKeyFrames().add(incrementMana);
+        manaIncrementor.setCycleCount(Timeline.INDEFINITE);
+        manaIncrementor.play();
+
+
+//        Rectangle clipRectangle = new Rectangle(200, 200);
+//        manaCircleRadius.setClip(clipRectangle);
+
+        hotbar1.setUserData(15);
+        hotbar2.setUserData(3);
+        hotbar3.setUserData(3);
+        hotbar4.setUserData(10);
+        hotbar5.setUserData(35);
+        hotbar6.setUserData(10);
+
+
+        // initialize the player object for mana
+        setHeroActions(chilleingandRelaxeing);
+        manaLabel.setText(String.format("%d", chilleingandRelaxeing.getMana()));
+//        manaLabel.getStylesheets().add(new File())
     }
 }

@@ -52,11 +52,11 @@ public class Automaton
     public boolean callAutomaton(int automata)
     {
         return switch (automata) {
-            case 1 -> Serviettes();
+            case 1 -> Maze();
             case 2 -> Diamoeba();
             case 3 -> HighLife();
             case 4 -> Vote();
-            case 5 -> Maze();
+            case 5 -> Serviettes();
             default -> Life();
         };
     }
