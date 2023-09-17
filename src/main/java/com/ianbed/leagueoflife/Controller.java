@@ -2,45 +2,39 @@ package com.ianbed.leagueoflife;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.PixelWriter;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.paint.Color;
+import javafx.scene.input.MouseEvent;
 import javafx.util.Duration;
 
 import java.awt.image.BufferedImage;
 
 public class Controller {
     final static int size = 1000;
-    final static int window_width = 1000, window_height = 800;
+    final static int window_width = 1000, window_height = 1000;
     final static int frameInterval = 5, generationalInterval = 100;
-    int automata = 5, spawnQuantity = 15000;
-    static boolean moveGenerations = true;
+    int automata = 0, spawnQuantity = 15000;
+    static boolean moveGenerations = true, mouseEvent = false;
 
     static int x_size = 5000, y_size = 5000;
     static int max_size = 200;
     static int interval = 0;
     static double scroll_speed = 10;
 
-    static int x_accel, y_accel, scrolling = 0;
+    static double x_accel, y_accel;
+    static int scrolling = 0;
+    static double m_x;
+    static double m_y;
     int x_vel = 0, y_vel = 0;
+
+    Board pixels;
 
     public ImageView imageBoard;
     @FXML
-    private Label welcomeText;
-    @FXML
-    private Canvas grid;
 
     public Image renderBoard(Board board) {
         // create our image to render onto
@@ -70,26 +64,18 @@ public class Controller {
 
     public void updateVel()
     {
-        x_vel += x_accel / 10;
-        y_vel += y_accel / 10;
+        x_vel += (x_accel / 10);
+        y_vel += (y_accel / 10);
 
         if (x_accel == 0 && x_vel != 0)
-        {
             x_vel += (x_vel < 0) ? 1 : -1;
-        }
 
         if (y_accel == 0 && y_vel != 0)
-        {
             y_vel += (y_vel < 0) ? 1 : -1;
-        }
     }
 
-    public void updateBoard(Board board, boolean updater) {
-        double x, y;
-        double top, left;
-
-        updateVel();
-
+    public void threadedGenerator(Board board, boolean updater)
+    {
         Thread thread = new Thread("Generational Renderer") {
             public void run() {
                 // 100 - interval spacing between zoom and update.
@@ -102,8 +88,14 @@ public class Controller {
             }
         };
         thread.start();
+    }
 
+    public void updateBoard(Board board, boolean updater) {
+        double x, y;
+        double top, left;
         Rectangle2D nuevo;
+
+        threadedGenerator(board, updater);
 
         if (imageBoard.getViewport() != null)
         {
@@ -128,15 +120,15 @@ public class Controller {
 
         double new_x, new_y;
 
-        new_x = left+(x_vel/2.0);
-        new_y = top+(y_vel/2.0);
+        new_x = left + (x_vel/2.0) * (x/x_size);
+        new_y = top + (y_vel/2.0) * (y/y_size);
 
         if (new_x < 0)
         {
             new_x = 1;
             x_accel = 0;
         }
-//        /// MAGIC NUMBERS _ screen width and lenght ,,.
+        /// MAGIC NUMBERS _ screen width and lenght ,,.
         else if (new_x + x  > x_size)
         {
             new_x = x_size - x;
@@ -154,15 +146,14 @@ public class Controller {
             y_accel = 0;
         }
 
-//        // this is where the magic (zoomeing) se ocurio
-        if (scrolling == 1)
+        if (scrolling == 1 && x > 300)
         {
             new_x += scroll_speed;
             new_y += scroll_speed;
             x -= 2 * scroll_speed;
             y -= 2 * scroll_speed;
         }
-        else if (scrolling == -1)
+        else if (scrolling == -1 && x/(x_size/size) < window_width)
         {
             new_x -= scroll_speed;
             new_y -= scroll_speed;
@@ -170,13 +161,21 @@ public class Controller {
             y += 2 * scroll_speed;
         }
 
+        if (mouseEvent)
+        {
+            int click_x = (int) ((new_x + (x * (m_x/window_width))) / 5);
+            int click_y = (int) ((new_y + (y * ((m_y + 110)/window_height))) / 5);
+            tileAtPoint(click_x, click_y);
+        }
+
+        updateVel();
+
         nuevo = new Rectangle2D(new_x, new_y,  x,  y);
         imageBoard.setViewport(nuevo);
-
         interval++;
     }
 
-    public static void readKeypress(KeyEvent press)
+    public static void readKeyPress(KeyEvent press)
     {
         if (press.getText().equals("a"))
         {
@@ -227,9 +226,27 @@ public class Controller {
         }
     }
 
+    public void tileAtPoint(int x, int y)
+    {
+        pixels.retrieve(x, y).setActive(true);
+        imageBoard.setImage(renderBoard(pixels));
+        System.out.println(y);
+        mouseEvent = false;
+    }
+
+    public static void readMousePress(MouseEvent input)
+    {
+        if (input.isPrimaryButtonDown())
+        {
+            m_x = input.getX();
+            m_y = input.getY();
+            mouseEvent = true;
+        }
+    }
+
     @FXML
     public void initialize() {
-        Board pixels = new Board(size);
+        pixels = new Board(size);
         pixels.randomPixelPlacement(spawnQuantity);
         boolean active = false;
 
