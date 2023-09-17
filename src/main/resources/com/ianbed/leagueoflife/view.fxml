@@ -1,12 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
 
-<GridPane fx:id="gridPane" alignment="CENTER_RIGHT" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ianbed.leagueoflife.Controller">
+<GridPane fx:id="gridPane" alignment="CENTER_RIGHT" maxHeight="800.0" maxWidth="1000.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ianbed.leagueoflife.Controller">
    <columnConstraints>
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
    </columnConstraints>
@@ -17,7 +29,116 @@
 <!--      <Canvas fx:id="grid" height="500.0" width="500.0" />-->
       <AnchorPane prefHeight="200.0" prefWidth="200.0">
          <children>
-            <ImageView fx:id="imageBoard" fitHeight="1000.0" fitWidth="1000.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="imageBoard" fitHeight="1000.0" fitWidth="1000.0" pickOnBounds="true" preserveRatio="true" smooth="false" />
+            <ImageView fitHeight="244.0" fitWidth="1000.0" layoutY="657.0" pickOnBounds="true">
+               <image>
+                  <Image url="@../../../images/gradient.png" />
+               </image>
+            </ImageView>
+            <HBox layoutX="179.0" layoutY="748.0" prefHeight="140.0" prefWidth="200.0" spacing="10.0">
+               <children>
+                  <VBox prefHeight="90.0" prefWidth="40.0" spacing="10.0">
+                     <children>
+                        <ImageView fx:id="hotbar1" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../images/maze.png" />
+                           </image>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </ImageView>
+                        <ImageView fx:id="hotbar4" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../images/vote.png" />
+                           </image>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </ImageView>
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="90.0" prefWidth="40.0" spacing="10.0">
+                     <children>
+                        <ImageView fx:id="hotbar2" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../images/diamoeba.png" />
+                           </image>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </ImageView>
+                        <ImageView fx:id="hotbar5" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../images/serviettes.png" />
+                           </image>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </ImageView>
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="90.0" prefWidth="40.0" spacing="10.0">
+                     <children>
+                        <ImageView fx:id="hotbar3" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../images/highlife.png" />
+                           </image>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </ImageView>
+                        <ImageView fx:id="hotbar6" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../images/life.png" />
+                           </image>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </ImageView>
+                     </children>
+                  </VBox>
+               </children>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="15.0" />
+               </padding>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="200.0" />
+            <ImageView fitHeight="50.0" fitWidth="200.0" layoutX="720.0" layoutY="768.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../images/nuke.png" />
+               </image>
+            </ImageView>
+            <Group layoutX="778.0" layoutY="743.0" />
+            <Group layoutX="-40.0" layoutY="720.0">
+               <children>
+                  <Circle fill="#808080" layoutX="111.0" layoutY="113.0" radius="83.0" smooth="false" stroke="BLACK" strokeType="INSIDE" />
+                  <ImageView fitHeight="250.0" fitWidth="299.0" layoutX="-14.0" layoutY="-12.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../images/mana.png" />
+                     </image>
+                  </ImageView>
+                  <Label fx:id="manaLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="39.0" layoutY="42.0" prefHeight="141.0" prefWidth="144.0" stylesheets="@../../../css/fonts.css" text="..." textFill="WHITE">
+                     <font>
+                        <Font size="50.0" />
+                     </font>
+                     <effect>
+                        <DropShadow blurType="ONE_PASS_BOX" height="15.0" offsetY="5.0" radius="7.0" spread="0.07" width="15.0">
+                           <color>
+                              <Color opacity="0.3654821813106537" />
+                           </color>
+                        </DropShadow>
+                     </effect>
+                  </Label>
+               </children>
+            </Group>
+            <Pane layoutX="836.0" layoutY="743.0" prefHeight="150.0" prefWidth="150.0" style="-fx-background-color: black; -fx-border-color: white; -fx-border-width: 10;">
+               <children>
+                  <ImageView fx:id="minimap" fitHeight="134.0" fitWidth="144.0" layoutX="8.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true" />
+               </children>
+            </Pane>
 <!--            <HBox layoutY="432.0" prefHeight="67.0" prefWidth="500.0" spacing="32.0" style="-fx-background-color: #1f1f1f88;">-->
 <!--               <children>-->
 <!--                  <ImageView id="maze" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">-->

@@ -24,7 +24,7 @@ public class Application extends javafx.application.Application {
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("view.fxml"));
         // Size is set here :3
-        Scene scene = new Scene(fxmlLoader.load(), 1000, 1000);
+        Scene scene = new Scene(fxmlLoader.load(), 1000, 1000); // try getting 1000x800 later maybe?
         stage.setTitle("League of Life");
         stage.setScene(scene);
         stage.show();
