@@ -16,16 +16,21 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.nio.Buffer;
 
 public class Controller {
     final static int size = 1000;
     final static int window_width = 1000, window_height = 800;
     final static int frameInterval = 5, generationalInterval = 100;
-    int automata = 5, spawnQuantity = 15000;
+
+    int automata = 0, spawnQuantity = 500;
     static boolean moveGenerations = true;
 
     static int x_size = 5000, y_size = 5000;
@@ -36,13 +41,24 @@ public class Controller {
     static int x_accel, y_accel, scrolling = 0;
     int x_vel = 0, y_vel = 0;
 
-    public ImageView imageBoard;
-    @FXML
-    private Label welcomeText;
-    @FXML
-    private Canvas grid;
+    int topLeftMinimapX, topLeftMinimapY, miniMapFocusWidth, miniMapFocusHeight;
 
-    public Image renderBoard(Board board) {
+    @FXML
+    public ImageView imageBoard;
+    private Label welcomeText;
+    private Canvas grid;
+    public GridPane gridPane;
+    public Label manaLabel;
+    public ImageView minimap;
+
+    public ImageView hotbar1; // mazda
+    public ImageView hotbar2; // diamoeba
+    public ImageView hotbar3; //
+    public ImageView hotbar4; // vote
+    public ImageView hotbar5; //
+    public ImageView hotbar6; //
+
+    public BufferedImage renderBoard(Board board) {
         // create our image to render onto
         BufferedImage bufferedImage = new BufferedImage(x_size, y_size, BufferedImage.TYPE_INT_RGB);
         int r = 255, g = 255, b = 255;
@@ -51,7 +67,6 @@ public class Controller {
         for (int x = 0; x < size; x++) {
             for (int y = 0; y < size; y++) {
                 if (board.retrieve(x, y).isActive()) {
-
                     // Scale so one tile is spread over a 5x5 area
                     for (int i = 0; i < 5; i++)
                         for (int j = 0; j < 5; j++)
@@ -60,7 +75,65 @@ public class Controller {
             }
         }
 
+//        Image generatedImage = SwingFXUtils.toFXImage(bufferedImage, null);
+        // return BufferedImage in case we need to add more pixels to it, e.g. in the minimap
+        return bufferedImage;
+    }
+
+    // convert the BufferedImage to an image to use in ImageViews, etc
+    public Image convertBufferedImage(BufferedImage bufferedImage) {
         return SwingFXUtils.toFXImage(bufferedImage, null);
+    }
+
+    public void renderMinimap(BufferedImage bufferedImage) {
+        int red = 150, green = 0, blue = 255;
+        int col = colorize(red, green, blue);
+
+        // creating the rectangle
+        for (int i = topLeftMinimapX; i < topLeftMinimapX + miniMapFocusWidth; i++) {
+            for (int a = 0; a < 30; a++) {
+                bufferedImage.setRGB(i % x_size, (topLeftMinimapY + a) % y_size, col);
+                bufferedImage.setRGB(i % x_size, ((topLeftMinimapY + miniMapFocusHeight) + a) % y_size, col);
+            }
+        }
+        for (int j = topLeftMinimapY; j < topLeftMinimapY + miniMapFocusHeight; j++) {
+            for (int c = 0; c < 30; c++) {
+                bufferedImage.setRGB((topLeftMinimapX + c) % x_size, j % y_size, col);
+                bufferedImage.setRGB(((topLeftMinimapX + miniMapFocusWidth) + c) % x_size, j % y_size, col);
+            }
+        }
+
+//        for (int i = topLeftMinimapX; i < topLeftMinimapX + miniMapFocusWidth; i++) {
+//            for (int a = 0; a < 5; a++)
+//                for (int b = 0; b < 5; b++)
+//                    bufferedImage.setRGB((i*5+a) % x_size, (i*5), col);
+//        }
+//        for (int j = topLeftMinimapY; j < topLeftMinimapY + miniMapFocusHeight; j++) {
+//            for (int c = 0; c < 5; c++)
+//                for (int d = 0; d < 5; d++)
+//                    bufferedImage.setRGB((j*5), (j*5+d) % y_size, col);
+//        }
+//        for (int k = topLeftMinimapX; k < topLeftMinimapX + miniMapFocusWidth; k++) {
+//            for (int e = 0; e < 5; e++)
+//                for (int f = 0; f < 5; f++)
+//                    bufferedImage.setRGB((k*5+e) % x_size, ((k*5) + miniMapFocusHeight) % y_size, col);
+//        }
+//        for (int l = topLeftMinimapY; l < topLeftMinimapY + miniMapFocusHeight; l++) {
+//            for (int g = 0; g < 5; g++)
+//                for (int h = 0; h < 5; h++)
+//                    bufferedImage.setRGB((l*5) % x_size, (l*5+h) % y_size, col);
+//        }
+
+        minimap.setImage(convertBufferedImage(bufferedImage));
+    }
+
+    public void updateMinimapRectangleBounds(Rectangle2D rectangle2D) {
+        topLeftMinimapX = (int) rectangle2D.getMinX();
+        topLeftMinimapY = (int) rectangle2D.getMinY();
+        miniMapFocusWidth = (int) rectangle2D.getWidth();
+        miniMapFocusHeight = (int) rectangle2D.getHeight();
+
+//        System.out.println(bottomRight);
     }
 
     public int colorize(int r, int g, int b)
@@ -96,8 +169,10 @@ public class Controller {
                 if (updater && interval % generationalInterval == 0)
                 {
                     board.progressGeneration(automata);
-                    Image updated = renderBoard(board);
+                    BufferedImage bufferedImage = renderBoard(board);
+                    Image updated = convertBufferedImage(bufferedImage);
                     imageBoard.setImage(updated);
+                    renderMinimap(bufferedImage);
                 }
             }
         };
@@ -171,8 +246,9 @@ public class Controller {
         }
 
         nuevo = new Rectangle2D(new_x, new_y,  x,  y);
-        imageBoard.setViewport(nuevo);
+        updateMinimapRectangleBounds(nuevo);
 
+        imageBoard.setViewport(nuevo);
         interval++;
     }
 

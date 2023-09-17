@@ -11,16 +11,14 @@ public class Application extends javafx.application.Application {
 
     public void buildEventListeners(Scene scene)
     {
-        scene.addEventFilter(KeyEvent.ANY, keyEvent -> {
-            Controller.readKeypress(keyEvent);
-        });;
+        scene.addEventFilter(KeyEvent.ANY, Controller::readKeypress);;
     }
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource("view.fxml"));
         // Size is set here :3
         Scene scene = new Scene(fxmlLoader.load(), 1000, 800);
-        stage.setTitle("Hello!");
+        stage.setTitle("League of Life");
         stage.setScene(scene);
         stage.show();
         stage.setResizable(false);
