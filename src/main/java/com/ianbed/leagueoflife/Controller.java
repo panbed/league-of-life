@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
@@ -28,7 +29,7 @@ public class Controller {
     public MediaView backgroundVideo;
 
     int automata = 0, spawnQuantity = 15000;
-    static boolean moveGenerations = true, mouseEvent = false;
+    static boolean moveGenerations = true, mouseEvent = false, forcer = false;
 
     static int x_size = 5000, y_size = 5000;
     static int max_size = 200;
@@ -58,11 +59,26 @@ public class Controller {
     public ImageView hotbar5; //
     public ImageView hotbar6; //
     Board pixels;
-  
+
+    BufferedImage current;
+
+    // BUTTON FUNCTION (on keypress)
+    // Swap to different automata:
+    // Life - switchToAutomata(player, 0); .... (where 0 = id of Automata to use)
+
+    public void switchToAutomata(Player p, int automata)
+    {
+        if (p.attemptCast(20))
+        {
+            // Switch automata and update label.
+            this.automata = automata;
+            manaLabel.setText(Integer.toString(p.getMana()));
+        }
+    }
   
     public BufferedImage renderBoard(Board board) {
         // create our image to render onto
-        BufferedImage bufferedImage = new BufferedImage(x_size, y_size, BufferedImage.TYPE_INT_RGB);
+        current = new BufferedImage(x_size, y_size, BufferedImage.TYPE_INT_RGB);
         int r = 255, g = 255, b = 255;
         int col = colorize(r, g, b); // bitshift to create int for color
         // iterate through all pixels, if it should be active, then set the color on the image to active as well
@@ -72,14 +88,14 @@ public class Controller {
                     // Scale so one tile is spread over a 5x5 area
                     for (int i = 0; i < 5; i++)
                         for (int j = 0; j < 5; j++)
-                            bufferedImage.setRGB((x*5+i) % x_size, (y*5+j) % y_size, col);
+                            current.setRGB((x*5+i) % x_size, (y*5+j) % y_size, col);
                 }
             }
         }
 
 //        Image generatedImage = SwingFXUtils.toFXImage(bufferedImage, null);
-        // return BufferedImage in case we need to add more pixels to it, e.g. in the minimap
-        return bufferedImage;
+        // return BufferedImage in case we need to add more pixels to it, e.g. in the minimapq
+        return current;
     }
   
     // convert the BufferedImage to an image to use in ImageViews, etc
@@ -88,21 +104,24 @@ public class Controller {
     }
   
   
-    public void renderMinimap(BufferedImage bufferedImage) {
+    public void renderMinimap(BufferedImage bufferedImage, boolean frame) {
         int red = 254, green = 254, blue = 254;
         int col = colorize(red, green, blue);
 
         // creating the rectangle
-        for (int i = topLeftMinimapX; i < topLeftMinimapX + miniMapFocusWidth; i++) {
-            for (int a = 0; a < 30; a++) {
-                bufferedImage.setRGB(i % x_size, (topLeftMinimapY + a) % y_size, col);
-                bufferedImage.setRGB(i % x_size, ((topLeftMinimapY + miniMapFocusHeight) + a) % y_size, col);
+        if (frame)
+        {
+            for (int i = topLeftMinimapX; i < topLeftMinimapX + miniMapFocusWidth; i++) {
+                for (int a = 0; a < 30; a++) {
+                    bufferedImage.setRGB((i % x_size) < 0 ? 1 : i % x_size, ((topLeftMinimapY + a) % y_size) < 0 ? 1 : ((topLeftMinimapY + a) % y_size), col);
+                    bufferedImage.setRGB(i % x_size, ((topLeftMinimapY + miniMapFocusHeight) + a) % y_size, col);
+                }
             }
-        }
-        for (int j = topLeftMinimapY; j < topLeftMinimapY + miniMapFocusHeight; j++) {
-            for (int c = 0; c < 30; c++) {
-                bufferedImage.setRGB((topLeftMinimapX + c) % x_size, j % y_size, col);
-                bufferedImage.setRGB(((topLeftMinimapX + miniMapFocusWidth) + c) % x_size, j % y_size, col);
+            for (int j = topLeftMinimapY; j < topLeftMinimapY + miniMapFocusHeight; j++) {
+                for (int c = 0; c < 30; c++) {
+                    bufferedImage.setRGB((topLeftMinimapX + c) % x_size, j % y_size, col);
+                    bufferedImage.setRGB(((topLeftMinimapX + miniMapFocusWidth) + c) % x_size, j % y_size, col);
+                }
             }
         }
 
@@ -135,33 +154,50 @@ public class Controller {
             y_vel += (y_vel < 0) ? 1 : -1;
     }
   
-    public void threadedGenerator(Board board, boolean updater)
+    public BufferedImage threadedGenerator(Board board, boolean updater, boolean test)
     {
         Thread thread = new Thread("Generational Renderer") {
             public void run() {
                 // 100 - interval spacing between zoom and update.
-                if (updater && interval % generationalInterval == 0)
+                if ((updater && interval % generationalInterval == 0) || test)
                 {
                     board.progressGeneration(automata);
-                    BufferedImage bufferedImage = renderBoard(board);
-                    Image updated = convertBufferedImage(bufferedImage);
+                    BufferedImage bi = renderBoard(board);
+                    Image updated = convertBufferedImage(bi);
                     imageBoard.setImage(updated);
-                    renderMinimap(bufferedImage);
+                    renderMinimap(bi, true);
+                    forcer = false;
                 }
             }
         };
         thread.start();
+
+        return null;
     }
 
     public void updateBoard(Board board, boolean updater) {
         double x, y;
         double top, left;
         Rectangle2D nuevo;
+        BufferedImage replacement;
+        boolean last = true;
 
-        threadedGenerator(board, updater);
+        if (forcer)
+        {
+            int prior = interval;
+            interval = generationalInterval;
+            replacement = threadedGenerator(board, true, true);
+            forcer = false;
+            last = true;
+        }
+        else
+        {
+            threadedGenerator(board, updater, false);
+        }
 
         if (imageBoard.getViewport() != null)
         {
+            // create viewport for first iteration
             x = imageBoard.getViewport().getWidth();
             y = imageBoard.getViewport().getHeight();
             top = imageBoard.getViewport().getMinY();
@@ -190,6 +226,7 @@ public class Controller {
         {
             new_x = 1;
             x_accel = 0;
+            x_vel = 0;
         }
         /// MAGIC NUMBERS _ screen width and lenght ,,.
         else if (new_x + x  > x_size)
@@ -202,6 +239,7 @@ public class Controller {
         {
             new_y = 1;
             y_accel = 0;
+            y_vel = 0;
         }
         else if (new_y + y  > y_size)
         {
@@ -236,6 +274,7 @@ public class Controller {
         nuevo = new Rectangle2D(new_x, new_y,  x,  y);
         updateMinimapRectangleBounds(nuevo);
         imageBoard.setViewport(nuevo);
+
         interval++;
     }
 
@@ -288,6 +327,11 @@ public class Controller {
             if (press.getEventType().getName().equals("KEY_PRESSED"))
                 moveGenerations = !moveGenerations;
         }
+        else if (press.getCode() == KeyCode.RIGHT)
+        {
+            if (press.getEventType().getName().equals("KEY_PRESSED"))
+                forcer = true;
+        }
     }
 
     public void tileAtPoint(int x, int y)
@@ -310,15 +354,11 @@ public class Controller {
 
     @FXML
     public void initialize() {
-
-//        Media media = new Media("../../video/gameplay.mkv");
-//        backgroundVideo.
-
-
-
         pixels = new Board(size);
         pixels.randomPixelPlacement(spawnQuantity);
         boolean active = false;
+
+        manaLabel.setText("50");
 
         // use timeline to update board without stopping the main gui thread
         Timeline boardUpdater = new Timeline();
