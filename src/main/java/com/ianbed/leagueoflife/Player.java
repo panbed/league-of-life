@@ -1,7 +1,7 @@
 package com.ianbed.leagueoflife;
 
 public class Player {
-    static int default_mana = 10;
+    static int default_mana = 100;
     int x_min, y_min, x, y;
     int mana;
 
@@ -29,14 +29,14 @@ public class Player {
         mana = default_mana;
     }
 
-    public Player(int x_min, int y_min, int x, int y)
-    {
-        this();
-
-        this.x_min = x_min;
-        this.y_min = y_min;
-        this.x = x;
-        this.y = y;
-    }
+//    public Player(int x_min, int y_min, int x, int y)
+//    {
+//        this();
+//
+//        this.x_min = x_min;
+//        this.y_min = y_min;
+//        this.x = x;
+//        this.y = y;
+//    }
 
 }

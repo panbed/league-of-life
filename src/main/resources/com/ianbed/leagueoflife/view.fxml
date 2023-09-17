@@ -22,14 +22,21 @@
 
 <GridPane fx:id="gridPane" alignment="CENTER_RIGHT" maxHeight="800.0" maxWidth="1000.0" minHeight="800.0" minWidth="1000.0" prefHeight="800.0" prefWidth="1000.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ianbed.leagueoflife.Controller">
    <columnConstraints>
+      <ColumnConstraints />
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
    </columnConstraints>
    <rowConstraints>
       <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
    </rowConstraints>
    <children>
-      <Pane prefHeight="200.0" prefWidth="200.0" visible="false">
+      <Pane fx:id="menuPane" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
          <children>
+            <ImageView fitHeight="800.0" fitWidth="1000.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../images/screenshot_nohud.png" />
+               </image>
+            </ImageView>
+            <MediaView fx:id="backgroundVideo" fitHeight="800.0" fitWidth="2000.0" smooth="false" />
             <Rectangle arcHeight="10.0" arcWidth="10.0" fill="#00000080" height="650.0" layoutX="75.0" layoutY="75.0" stroke="WHITE" strokeWidth="10.0" width="400.0" />
             <Label fx:id="titleLabel" contentDisplay="CENTER" layoutX="75.0" layoutY="75.0" prefHeight="187.0" prefWidth="400.0" stylesheets="@../../../css/fonts.css" text="league" textFill="WHITE" wrapText="true">
                <font>
@@ -76,11 +83,48 @@
                   <Insets bottom="20.0" left="50.0" right="20.0" top="20.0" />
                </padding>
             </Label>
-            <MediaView fx:id="backgroundVideo" fitHeight="800.0" fitWidth="1000.0" />
+            <Label fx:id="mainMenuBody" alignment="TOP_LEFT" contentDisplay="CENTER" layoutX="75.0" layoutY="425.0" lineSpacing="5.0" prefHeight="215.0" prefWidth="400.0" stylesheets="@../../../css/fonts_menu.css" textFill="WHITE" wrapText="true">
+               <font>
+                  <Font size="22.0" />
+               </font>
+               <effect>
+                  <DropShadow blurType="ONE_PASS_BOX" height="15.0" offsetY="5.0" radius="7.0" spread="0.07" width="15.0">
+                     <color>
+                        <Color opacity="0.3654821813106537" />
+                     </color>
+                  </DropShadow>
+               </effect>
+               <padding>
+                  <Insets bottom="40.0" left="50.0" right="45.0" top="20.0" />
+               </padding>
+            </Label>
+            <Rectangle fx:id="playButtonRect" arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="150.0" layoutX="78.0" layoutY="572.0" stroke="WHITE" strokeType="INSIDE" width="400.0">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Rectangle>
+            <Label fx:id="playButtonLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="75.0" layoutY="589.0" lineSpacing="5.0" prefHeight="141.0" prefWidth="400.0" style="-fx-font-size: 69;" stylesheets="@../../../css/fonts_menu.css" text="PLAY" wrapText="true">
+               <effect>
+                  <DropShadow blurType="ONE_PASS_BOX" height="15.0" offsetY="5.0" radius="7.0" spread="0.07" width="15.0">
+                     <color>
+                        <Color opacity="0.3654821813106537" />
+                     </color>
+                  </DropShadow>
+               </effect>
+               <padding>
+                  <Insets bottom="40.0" left="50.0" right="45.0" top="20.0" />
+               </padding>
+               <font>
+                  <Font size="69.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Label>
          </children>
       </Pane>
 <!--      <Canvas fx:id="grid" height="500.0" width="500.0" />-->
-      <AnchorPane prefHeight="1000.0" prefWidth="1000.0">
+      <AnchorPane fx:id="gamePane" prefHeight="1000.0" prefWidth="1000.0" visible="false" GridPane.columnIndex="1">
          <children>
             <ImageView fx:id="imageBoard" fitHeight="1000.0" fitWidth="1000.0" pickOnBounds="true" preserveRatio="true" smooth="false" />
             <ImageView fitHeight="244.0" fitWidth="1000.0" layoutY="662.0" pickOnBounds="true">
@@ -88,7 +132,7 @@
                   <Image url="@../../../images/gradient.png" />
                </image>
             </ImageView>
-            <HBox layoutX="187.0" layoutY="759.0" prefHeight="140.0" prefWidth="215.0" spacing="20.0">
+            <HBox fx:id="algorithmBox" layoutX="187.0" layoutY="759.0" prefHeight="140.0" prefWidth="215.0" spacing="20.0">
                <children>
                   <VBox prefHeight="90.0" prefWidth="40.0" spacing="10.0">
                      <children>
@@ -184,7 +228,7 @@
             </VBox>
             <Group layoutX="-36.0" layoutY="716.0">
                <children>
-                  <Circle fill="#808080" layoutX="111.0" layoutY="113.0" radius="83.0" smooth="false" stroke="BLACK" strokeType="INSIDE" />
+                  <Circle fx:id="manaCircleRadius" fill="#808080" layoutX="111.0" layoutY="113.0" radius="83.0" smooth="false" stroke="BLACK" strokeType="INSIDE" />
                   <ImageView fitHeight="250.0" fitWidth="299.0" layoutX="-14.0" layoutY="-12.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../../../images/mana.png" />
@@ -202,8 +246,39 @@
                         </DropShadow>
                      </effect>
                   </Label>
+                  <Label fx:id="currentAlgorithm" alignment="CENTER" layoutX="-13.0" layoutY="-37.0" lineSpacing="10.0" prefHeight="51.0" prefWidth="249.0" stylesheets="@../../../css/fonts_menu.css" text="automata" textFill="WHITE" wrapText="true">
+                     <padding>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                     </padding>
+                     <effect>
+                        <DropShadow height="15.0" offsetY="5.0" radius="7.0" spread="0.07" width="15.0" />
+                     </effect>
+                  </Label>
                </children>
             </Group>
+            <Pane layoutX="414.0" layoutY="731.0" prefHeight="150.0" prefWidth="322.0">
+               <children>
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#00000080" height="150.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="321.0" />
+                  <Label fx:id="informationLabel" lineSpacing="10.0" prefHeight="150.0" prefWidth="322.0" stylesheets="@../../../css/fonts_menu.css" text="welcome to league of life..." textFill="WHITE" wrapText="true">
+                     <padding>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                     </padding>
+                  </Label>
+               </children>
+            </Pane>
+            <Pane layoutX="886.0" layoutY="108.0" prefHeight="51.0" prefWidth="100.0">
+               <children>
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#00000080" height="150.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="321.0" />
+                  <Label fx:id="pauseText" alignment="CENTER_RIGHT" contentDisplay="RIGHT" lineSpacing="10.0" prefHeight="51.0" prefWidth="100.0" stylesheets="@../../../css/fonts_menu.css" text="pause" textFill="WHITE" wrapText="true">
+                     <padding>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                     </padding>
+                     <effect>
+                        <DropShadow height="15.16" offsetY="5.0" radius="7.08" width="15.16" />
+                     </effect>
+                  </Label>
+               </children>
+            </Pane>
 <!--            <HBox layoutY="432.0" prefHeight="67.0" prefWidth="500.0" spacing="32.0" style="-fx-background-color: #1f1f1f88;">-->
 <!--               <children>-->
 <!--                  <ImageView id="maze" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">-->
