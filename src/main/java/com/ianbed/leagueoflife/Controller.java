@@ -10,18 +10,22 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Duration;
 
-import java.awt.*;
+import javafx.scene.control.Label;
 import java.awt.image.BufferedImage;
 import java.nio.Buffer;
+import java.util.Random;
 
 public class Controller {
     final static int size = 1000;
     final static int window_width = 1000, window_height = 1000;
     final static int frameInterval = 5, generationalInterval = 100;
+    public MediaView backgroundVideo;
 
     int automata = 0, spawnQuantity = 15000;
     static boolean moveGenerations = true, mouseEvent = false;
@@ -42,7 +46,7 @@ public class Controller {
     @FXML
     public ImageView imageBoard;
     private Label welcomeText;
-    private Canvas grid;
+//    private Canvas grid;
     public GridPane gridPane;
     public Label manaLabel;
     public ImageView minimap;
@@ -54,8 +58,6 @@ public class Controller {
     public ImageView hotbar5; //
     public ImageView hotbar6; //
     Board pixels;
-
-    public ImageView imageBoard;
   
   
     public BufferedImage renderBoard(Board board) {
@@ -87,7 +89,7 @@ public class Controller {
   
   
     public void renderMinimap(BufferedImage bufferedImage) {
-        int red = 150, green = 0, blue = 255;
+        int red = 254, green = 254, blue = 254;
         int col = colorize(red, green, blue);
 
         // creating the rectangle
@@ -291,8 +293,8 @@ public class Controller {
     public void tileAtPoint(int x, int y)
     {
         pixels.retrieve(x, y).setActive(true);
-        imageBoard.setImage(renderBoard(pixels));
-        System.out.println(y);
+        imageBoard.setImage(convertBufferedImage(renderBoard(pixels)));
+//        System.out.println(y);
         mouseEvent = false;
     }
 
@@ -308,6 +310,12 @@ public class Controller {
 
     @FXML
     public void initialize() {
+
+//        Media media = new Media("../../video/gameplay.mkv");
+//        backgroundVideo.
+
+
+
         pixels = new Board(size);
         pixels.randomPixelPlacement(spawnQuantity);
         boolean active = false;

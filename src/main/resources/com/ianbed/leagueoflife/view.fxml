@@ -14,11 +14,13 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.media.MediaView?>
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<GridPane fx:id="gridPane" alignment="CENTER_RIGHT" maxHeight="800.0" maxWidth="1000.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ianbed.leagueoflife.Controller">
+<GridPane fx:id="gridPane" alignment="CENTER_RIGHT" maxHeight="800.0" maxWidth="1000.0" minHeight="800.0" minWidth="1000.0" prefHeight="800.0" prefWidth="1000.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ianbed.leagueoflife.Controller">
    <columnConstraints>
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
    </columnConstraints>
@@ -26,16 +28,67 @@
       <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
    </rowConstraints>
    <children>
+      <Pane prefHeight="200.0" prefWidth="200.0" visible="false">
+         <children>
+            <Rectangle arcHeight="10.0" arcWidth="10.0" fill="#00000080" height="650.0" layoutX="75.0" layoutY="75.0" stroke="WHITE" strokeWidth="10.0" width="400.0" />
+            <Label fx:id="titleLabel" contentDisplay="CENTER" layoutX="75.0" layoutY="75.0" prefHeight="187.0" prefWidth="400.0" stylesheets="@../../../css/fonts.css" text="league" textFill="WHITE" wrapText="true">
+               <font>
+                  <Font size="70.0" />
+               </font>
+               <effect>
+                  <DropShadow blurType="ONE_PASS_BOX" height="15.0" offsetY="5.0" radius="7.0" spread="0.07" width="15.0">
+                     <color>
+                        <Color opacity="0.3654821813106537" />
+                     </color>
+                  </DropShadow>
+               </effect>
+               <padding>
+                  <Insets bottom="20.0" left="50.0" right="20.0" top="20.0" />
+               </padding>
+            </Label>
+            <Label fx:id="titleLabel1" contentDisplay="CENTER" layoutX="75.0" layoutY="169.0" prefHeight="187.0" prefWidth="400.0" stylesheets="@../../../css/fonts.css" text="of" textFill="WHITE" wrapText="true">
+               <font>
+                  <Font size="70.0" />
+               </font>
+               <effect>
+                  <DropShadow blurType="ONE_PASS_BOX" height="15.0" offsetY="5.0" radius="7.0" spread="0.07" width="15.0">
+                     <color>
+                        <Color opacity="0.3654821813106537" />
+                     </color>
+                  </DropShadow>
+               </effect>
+               <padding>
+                  <Insets bottom="20.0" left="50.0" right="20.0" top="20.0" />
+               </padding>
+            </Label>
+            <Label fx:id="titleLabel2" contentDisplay="CENTER" layoutX="75.0" layoutY="263.0" prefHeight="187.0" prefWidth="400.0" stylesheets="@../../../css/fonts.css" text="life" textFill="WHITE" wrapText="true">
+               <font>
+                  <Font size="70.0" />
+               </font>
+               <effect>
+                  <DropShadow blurType="ONE_PASS_BOX" height="15.0" offsetY="5.0" radius="7.0" spread="0.07" width="15.0">
+                     <color>
+                        <Color opacity="0.3654821813106537" />
+                     </color>
+                  </DropShadow>
+               </effect>
+               <padding>
+                  <Insets bottom="20.0" left="50.0" right="20.0" top="20.0" />
+               </padding>
+            </Label>
+            <MediaView fx:id="backgroundVideo" fitHeight="800.0" fitWidth="1000.0" />
+         </children>
+      </Pane>
 <!--      <Canvas fx:id="grid" height="500.0" width="500.0" />-->
-      <AnchorPane prefHeight="200.0" prefWidth="200.0">
+      <AnchorPane prefHeight="1000.0" prefWidth="1000.0">
          <children>
             <ImageView fx:id="imageBoard" fitHeight="1000.0" fitWidth="1000.0" pickOnBounds="true" preserveRatio="true" smooth="false" />
-            <ImageView fitHeight="244.0" fitWidth="1000.0" layoutY="657.0" pickOnBounds="true">
+            <ImageView fitHeight="244.0" fitWidth="1000.0" layoutY="662.0" pickOnBounds="true">
                <image>
                   <Image url="@../../../images/gradient.png" />
                </image>
             </ImageView>
-            <HBox layoutX="179.0" layoutY="748.0" prefHeight="140.0" prefWidth="200.0" spacing="10.0">
+            <HBox layoutX="187.0" layoutY="759.0" prefHeight="140.0" prefWidth="215.0" spacing="20.0">
                <children>
                   <VBox prefHeight="90.0" prefWidth="40.0" spacing="10.0">
                      <children>
@@ -105,14 +158,31 @@
                   <Insets />
                </opaqueInsets>
             </HBox>
-            <HBox prefHeight="100.0" prefWidth="200.0" />
-            <ImageView fitHeight="50.0" fitWidth="200.0" layoutX="720.0" layoutY="768.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../../../images/nuke.png" />
-               </image>
-            </ImageView>
-            <Group layoutX="778.0" layoutY="743.0" />
-            <Group layoutX="-40.0" layoutY="720.0">
+            <Pane layoutX="836.0" layoutY="731.0" prefHeight="150.0" prefWidth="150.0" style="-fx-background-color: black; -fx-border-color: white; -fx-border-width: 10;">
+               <children>
+                  <ImageView fx:id="minimap" fitHeight="140.0" fitWidth="140.0" layoutX="5.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true" />
+               </children>
+            </Pane>
+            <VBox layoutX="736.0" layoutY="731.0" prefHeight="150.0" prefWidth="100.0">
+               <children>
+                  <ImageView fitHeight="50.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../images/nuke.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="50.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../images/expand.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="50.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../images/nuke.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </VBox>
+            <Group layoutX="-36.0" layoutY="716.0">
                <children>
                   <Circle fill="#808080" layoutX="111.0" layoutY="113.0" radius="83.0" smooth="false" stroke="BLACK" strokeType="INSIDE" />
                   <ImageView fitHeight="250.0" fitWidth="299.0" layoutX="-14.0" layoutY="-12.0" pickOnBounds="true" preserveRatio="true">
@@ -134,11 +204,6 @@
                   </Label>
                </children>
             </Group>
-            <Pane layoutX="836.0" layoutY="743.0" prefHeight="150.0" prefWidth="150.0" style="-fx-background-color: black; -fx-border-color: white; -fx-border-width: 10;">
-               <children>
-                  <ImageView fx:id="minimap" fitHeight="134.0" fitWidth="144.0" layoutX="8.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true" />
-               </children>
-            </Pane>
 <!--            <HBox layoutY="432.0" prefHeight="67.0" prefWidth="500.0" spacing="32.0" style="-fx-background-color: #1f1f1f88;">-->
 <!--               <children>-->
 <!--                  <ImageView id="maze" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">-->
