@@ -34,7 +34,6 @@ public class Board
         for (int i = 0; i < size; i++)
             for (int j = 0; j < size; j++)
             {
-
                 Tile nuevo = new Tile(i, j, new Automaton(this, i, j).callAutomaton(automata));
 
                 if (nuevo.isActive())
